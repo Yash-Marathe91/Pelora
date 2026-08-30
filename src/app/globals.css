@@ -1,26 +1,180 @@
+@import url('https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:wght@400;500;600;700&family=Inter:wght@300;400;500;600;700&family=Manrope:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600&display=swap');
 @import "tailwindcss";
 
 :root {
-  --background: #ffffff;
-  --foreground: #171717;
+  --abyss-bg: #06131A;
+  --abyss-surface: #081C24;
+  --abyss-elevated: #0B2630;
+  --ocean-cyan: #39D6D0;
+  --cyan-highlight: #6AE7E2;
+  --seafoam: #75E6B5;
+  --sunlight: #F4C95D;
+  --coral: #F18A63;
+  --signal-red: #FF5B63;
+  --mist-text: #EAF6F7;
+  --fog-muted: #9BB3B8;
+  --slate-border: #24404A;
+  --slate-border-bright: #31515A;
 }
 
-@theme inline {
-  --color-background: var(--background);
-  --color-foreground: var(--foreground);
-  --font-sans: var(--font-geist-sans);
-  --font-mono: var(--font-geist-mono);
+@theme {
+  --color-abyss-bg: #06131A;
+  --color-abyss-surface: #081C24;
+  --color-abyss-elevated: #0B2630;
+  --color-ocean-cyan: #39D6D0;
+  --color-cyan-highlight: #6AE7E2;
+  --color-[#39D6D0]: #39D6D0;
+  --color-[#75E6B5]: #75E6B5;
+  --color-[#F4C95D]: #F4C95D;
+  --color-[#F18A63]: #F18A63;
+  --color-[#FF5B63]: #FF5B63;
+  --color-[#EAF6F7]: #EAF6F7;
+  --color-[#9BB3B8]: #9BB3B8;
+  --color-[#24404A]: #24404A;
+  --font-display: 'Manrope', sans-serif;
+  --font-body: 'Inter', sans-serif;
+  --font-data: 'IBM Plex Sans', sans-serif;
+  --font-mono: 'JetBrains Mono', monospace;
 }
 
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
-  }
+* {
+  box-sizing: border-box;
 }
 
-body {
-  background: var(--background);
-  color: var(--foreground);
-  font-family: Arial, Helvetica, sans-serif;
+html, body {
+  background-color: var(--abyss-bg);
+  color: var(--mist-text);
+  font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+  overflow-x: hidden;
+  min-height: 100vh;
+  margin: 0;
+  padding: 0;
+  color-scheme: dark;
+}
+
+/* Custom Scrollbars */
+::-webkit-scrollbar {
+  width: 6px;
+  height: 6px;
+}
+::-webkit-scrollbar-track {
+  background: #06131A;
+}
+::-webkit-scrollbar-thumb {
+  background: #24404A;
+  border-radius: 4px;
+}
+::-webkit-scrollbar-thumb:hover {
+  background: #39D6D0;
+}
+
+/* Typography Custom Rules */
+h1, h2, h3, .font-manrope {
+  font-family: 'Manrope', sans-serif;
+}
+.font-data-label {
+  font-family: 'IBM Plex Sans', sans-serif;
+}
+.font-mono-code {
+  font-family: 'JetBrains Mono', monospace;
+}
+
+/* Pelora Glass & Surface Utility Classes */
+.pelora-card {
+  background: rgba(8, 28, 36, 0.85);
+  backdrop-filter: blur(12px);
+  border: 1px solid rgba(36, 64, 74, 0.8);
+  border-radius: 0.85rem;
+  box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.37);
+  transition: border-color 0.2s ease, box-shadow 0.2s ease;
+}
+
+.pelora-card:hover {
+  border-color: rgba(57, 214, 208, 0.4);
+}
+
+.pelora-card-interactive {
+  background: linear-gradient(135deg, rgba(11, 38, 48, 0.9) 0%, rgba(8, 28, 36, 0.9) 100%);
+  backdrop-filter: blur(16px);
+  border: 1px solid rgba(36, 64, 74, 0.7);
+  border-radius: 0.85rem;
+  transition: all 0.25s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.pelora-card-interactive:hover {
+  border-color: rgba(57, 214, 208, 0.6);
+  transform: translateY(-2px);
+  box-shadow: 0 12px 28px -6px rgba(57, 214, 208, 0.15);
+}
+
+.pelora-glass {
+  background: rgba(6, 19, 26, 0.75);
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
+  border: 1px solid rgba(36, 64, 74, 0.6);
+}
+
+.pelora-border {
+  border: 1px solid #24404A;
+}
+
+/* Bioluminescent Lighting Effects */
+.glow-cyan {
+  box-shadow: 0 0 20px rgba(57, 214, 208, 0.25);
+}
+
+.glow-cyan-lg {
+  box-shadow: 0 0 40px rgba(57, 214, 208, 0.35);
+}
+
+.glow-seafoam {
+  box-shadow: 0 0 20px rgba(117, 230, 181, 0.25);
+}
+
+.text-gradient-cyan {
+  background: linear-gradient(135deg, #6AE7E2 0%, #39D6D0 50%, #75E6B5 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+}
+
+.text-gradient-sea {
+  background: linear-gradient(135deg, #EAF6F7 0%, #9BB3B8 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+}
+
+.bg-biolum-radial {
+  background: radial-gradient(circle at 50% 20%, rgba(57, 214, 208, 0.12) 0%, rgba(11, 38, 48, 0.05) 50%, rgba(6, 19, 26, 0) 100%);
+}
+
+.radar-sweep-bg {
+  background: radial-gradient(circle at center, rgba(57, 214, 208, 0.05) 0%, transparent 70%);
+}
+
+/* Radar & Pulse Animations */
+@keyframes pulse-subtle {
+  0%, 100% { opacity: 1; transform: scale(1); }
+  50% { opacity: 0.65; transform: scale(0.98); }
+}
+
+@keyframes radar-ping {
+  0% { transform: scale(0.8); opacity: 0.8; }
+  100% { transform: scale(2.2); opacity: 0; }
+}
+
+@keyframes float-gentle {
+  0%, 100% { transform: translateY(0px); }
+  50% { transform: translateY(-6px); }
+}
+
+.animate-pulse-subtle {
+  animation: pulse-subtle 3s infinite ease-in-out;
+}
+
+.animate-radar-ping {
+  animation: radar-ping 2.5s cubic-bezier(0, 0, 0.2, 1) infinite;
+}
+
+.animate-float-gentle {
+  animation: float-gentle 4s infinite ease-in-out;
 }
