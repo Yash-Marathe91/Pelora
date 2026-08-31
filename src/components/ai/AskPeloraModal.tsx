@@ -50,10 +50,10 @@ export const AskPeloraModal: React.FC = () => {
             </div>
             <div>
               <h3 className="text-base font-bold font-manrope text-[#EAF6F7]">
-                Ask Pelora AI Intelligence Workspace
+                Pelora Intelligence Command & Search
               </h3>
               <p className="text-xs text-[#9BB3B8] font-data-label">
-                Multi-agent reasoning engine powered by satellite, hydrographic & meteorological live data
+                Cross-reference hydrographic, satellite & AIS telemetry across 11 live ocean parameters
               </p>
             </div>
           </div>
@@ -74,7 +74,7 @@ export const AskPeloraModal: React.FC = () => {
                 type="text"
                 value={inputQuery}
                 onChange={(e) => setInputQuery(e.target.value)}
-                placeholder="Ask Pelora anything about ocean conditions, safety, PFZ, or routing..."
+                placeholder="Query ocean conditions, safety indices, PFZ boundaries, or optimal routing..."
                 className="w-full bg-[#06131A] border border-[#24404A] focus:border-[#39D6D0] rounded-xl px-4 py-3 text-sm text-[#EAF6F7] placeholder-[#9BB3B8]/60 focus:outline-none transition-colors pr-28 font-manrope shadow-inner"
               />
               <button
@@ -85,11 +85,11 @@ export const AskPeloraModal: React.FC = () => {
                 {isSimulatingAgent ? (
                   <>
                     <RefreshCw className="w-3.5 h-3.5 animate-spin" />
-                    <span>Reasoning...</span>
+                    <span>Processing...</span>
                   </>
                 ) : (
                   <>
-                    <span>Ask AI</span>
+                    <span>Search</span>
                     <Send className="w-3.5 h-3.5" />
                   </>
                 )}
@@ -99,7 +99,7 @@ export const AskPeloraModal: React.FC = () => {
             {/* Quick Suggestions */}
             <div className="flex items-center space-x-2 overflow-x-auto pb-1 text-xs">
               <span className="text-[#9BB3B8] font-data-label flex-shrink-0 text-[11px]">
-                Demo Prompts:
+                Quick Queries:
               </span>
               {PRESET_QUERIES.map((preset, idx) => (
                 <button
@@ -122,7 +122,7 @@ export const AskPeloraModal: React.FC = () => {
                 <div className="flex items-start justify-between">
                   <div>
                     <span className="text-[10px] font-bold font-data-label uppercase tracking-widest text-[#39D6D0]">
-                      SYNTHESIZED AI RECOMMENDATION
+                      HYDROGRAPHIC DECISION BRIEF
                     </span>
                     <h4 className="text-lg font-bold font-manrope text-[#EAF6F7] mt-1">
                       Favourable Departure Window Confirmed before 11:30 AM IST

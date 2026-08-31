@@ -7,7 +7,7 @@ import { ConfidenceBadge } from '@/components/ui/ConfidenceBadge';
 import { FreshnessIndicator } from '@/components/ui/FreshnessIndicator';
 
 export const MapView: React.FC = () => {
-  const { setActivePage, activePFZ, setActivePFZ, activeVessel, setActiveVessel } = usePeloraStore();
+  const { setActivePage, activePFZ, setActivePFZ, activeVessel, setActiveVessel, lastDataSyncTime } = usePeloraStore();
   const [activeTab, setActiveTab] = useState<'layers' | 'inspector' | 'legend'>('layers');
   const [timeStep, setTimeStep] = useState(12); // Hours forecast
 
@@ -27,7 +27,7 @@ export const MapView: React.FC = () => {
           </div>
           <span className="text-[#9BB3B8] font-mono-code text-[11px]">16.44°N, 72.82°E</span>
           <span className="text-[#24404A]">|</span>
-          <FreshnessIndicator freshness="Live Satellite Sync" sourceCount={4} />
+          <FreshnessIndicator freshness={lastDataSyncTime} sourceCount={4} />
         </div>
 
         {/* Right Time Scrubber Bar */}
@@ -204,8 +204,8 @@ export const MapView: React.FC = () => {
           onClick={() => setActivePage('ask')}
           className="px-3.5 py-1.5 bg-gradient-to-r from-[#39D6D0] to-[#6AE7E2] text-[#06131A] font-bold text-xs font-manrope rounded-lg hover:brightness-110 transition-all flex items-center space-x-1.5"
         >
-          <Sparkles className="w-3.5 h-3.5" />
-          <span>Ask AI About Map View</span>
+          <Compass className="w-3.5 h-3.5" />
+          <span>Query Grid Intelligence</span>
         </button>
 
         <button

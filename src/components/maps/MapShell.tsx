@@ -1,6 +1,8 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { Layers, Eye, Compass, RefreshCw, MapPin, Navigation, Fish, ShieldAlert, Waves } from 'lucide-react';
 import { MarineDataService } from '@/services/marineDataService';
+import { usePeloraStore } from '@/store/usePeloraStore';
+import { PFZZone, Vessel } from '@/types/pelora';
 
 interface MapShellProps {
   height?: string;
@@ -14,6 +16,7 @@ export const MapShell: React.FC<MapShellProps> = ({
   interactive = true,
 }) => {
   const mapContainerRef = useRef<HTMLDivElement>(null);
+  const { vesselsList, pfzList, liveRasterData, isSyncingLiveData, syncLiveDataFromBackend, lastDataSyncTime } = usePeloraStore();
   const [activeLayers, setActiveLayers] = useState({
     sst: true,
     chlorophyll: true,
@@ -23,8 +26,6 @@ export const MapShell: React.FC<MapShellProps> = ({
   });
 
   const [mapLoaded, setMapLoaded] = useState(false);
-  const pfzList = MarineDataService.getTopPFZones();
-  const vesselList = MarineDataService.getActiveVessels();
 
   useEffect(() => {
     // Attempt MapLibre initialization if maplibre-gl is available in browser context
@@ -96,11 +97,24 @@ export const MapShell: React.FC<MapShellProps> = ({
         <div className="absolute w-[300px] h-[300px] rounded-full border border-[#39D6D0]/20" />
       </div>
 
-      {/* Live Map Pins & Overlays */}
+      {/* Live Map Pins & Dynamic Data Layer Overlays */}
       <div className="absolute inset-0 pointer-events-auto">
+        {/* Copernicus Satellite Raster Grid Points */}
+        {activeLayers.sst && liveRasterData && liveRasterData.grid_data.map((pt: any, idx: number) => (
+          <div
+            key={idx}
+            className="absolute w-3 h-3 rounded-full bg-[#39D6D0]/40 border border-[#39D6D0]/70 transform -translate-x-1/2 -translate-y-1/2 pointer-events-none"
+            style={{
+              left: `${20 + (idx % 5) * 15}%`,
+              top: `${25 + Math.floor(idx / 5) * 12}%`,
+            }}
+            title={`SST: ${pt.sst_celsius}°C, Chl-a: ${pt.chlorophyll_mg_m3} mg/m³`}
+          />
+        ))}
+
         {/* PFZ Polygons Markers */}
         {activeLayers.pfz &&
-          pfzList.map((pfz, idx) => (
+          pfzList.map((pfz: PFZZone, idx: number) => (
             <div
               key={pfz.id}
               className="absolute transform -translate-x-1/2 -translate-y-1/2 cursor-pointer group"
@@ -120,22 +134,22 @@ export const MapShell: React.FC<MapShellProps> = ({
             </div>
           ))}
 
-        {/* Vessel Markers */}
+        {/* Live Vessel AIS Telemetry Markers */}
         {activeLayers.vessels &&
-          vesselList.map((vessel, idx) => (
+          vesselsList.map((vessel: Vessel, idx: number) => (
             <div
               key={vessel.id}
-              className="absolute transform -translate-x-1/2 -translate-y-1/2 cursor-pointer group"
+              className="absolute transform -translate-x-1/2 -translate-y-1/2 cursor-pointer group transition-all duration-500"
               style={{
-                left: `${28 + idx * 30}%`,
-                top: `${55 - idx * 18}%`,
+                left: `${28 + idx * 26}%`,
+                top: `${55 - idx * 16}%`,
               }}
             >
               <div className="relative flex items-center space-x-1">
-                <div className="w-6 h-6 rounded-md bg-[#0B2630] border border-[#75E6B5] flex items-center justify-center text-[#75E6B5] shadow-md">
-                  <Navigation className="w-3.5 h-3.5 transform rotate-45" />
+                <div className="w-6 h-6 rounded-md bg-[#0B2630] border border-[#75E6B5] flex items-center justify-center text-[#75E6B5] shadow-md group-hover:scale-110 transition-transform">
+                  <Navigation className="w-3.5 h-3.5 transform rotate-45 text-[#75E6B5]" />
                 </div>
-                <span className="text-[10px] font-mono-code bg-[#06131A]/90 text-[#9BB3B8] px-1.5 py-0.5 rounded border border-[#24404A]">
+                <span className="text-[10px] font-mono-code bg-[#06131A]/95 text-[#EAF6F7] px-2 py-0.5 rounded border border-[#24404A] shadow-md">
                   {vessel.name} ({vessel.speedKnots} kts)
                 </span>
               </div>
@@ -143,13 +157,21 @@ export const MapShell: React.FC<MapShellProps> = ({
           ))}
       </div>
 
-      {/* Map Header Status & Compass */}
-      <div className="absolute top-4 left-4 z-10 flex items-center space-x-3 bg-[#081C24]/90 backdrop-blur-md px-3.5 py-2 rounded-xl border border-[#24404A] text-xs">
+      {/* Map Header Status & Live Refresh Control */}
+      <div className="absolute top-4 left-4 z-10 flex items-center space-x-3 bg-[#081C24]/90 backdrop-blur-md px-3.5 py-2 rounded-xl border border-[#24404A] text-xs shadow-lg">
         <div className="flex items-center space-x-2">
           <span className="w-2 h-2 rounded-full bg-[#75E6B5] animate-ping" />
-          <span className="font-bold text-[#EAF6F7] font-manrope">Arabian Sea Hydrographic Grid</span>
+          <span className="font-bold text-[#EAF6F7] font-manrope">Arabian Sea Grid</span>
         </div>
         <span className="text-[#9BB3B8] font-mono-code text-[11px]">16.44°N, 72.82°E</span>
+        <button
+          onClick={() => syncLiveDataFromBackend()}
+          disabled={isSyncingLiveData}
+          className="ml-2 px-2.5 py-1 rounded-lg bg-[#0B2630] hover:bg-[#116579] border border-[#39D6D0]/40 text-[#39D6D0] hover:text-[#EAF6F7] font-bold font-data-label text-[11px] transition-all flex items-center space-x-1.5 disabled:opacity-50"
+        >
+          <RefreshCw className={`w-3 h-3 ${isSyncingLiveData ? 'animate-spin' : ''}`} />
+          <span>{isSyncingLiveData ? 'Syncing...' : 'Sync Live Grid'}</span>
+        </button>
       </div>
 
       {/* Layer Controls Panel (Top Right) */}

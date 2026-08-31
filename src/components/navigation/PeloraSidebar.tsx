@@ -42,8 +42,8 @@ const NAV_GROUPS: NavGroup[] = [
   {
     category: 'Core Workspaces',
     items: [
-      { id: 'ask', label: 'Ask Pelora AI', icon: Sparkles },
       { id: 'map', label: 'Ocean Intelligence Map', icon: MapIcon },
+      { id: 'ask', label: 'Intelligence Command', icon: Compass },
       { id: 'missions', label: 'Mission Control', icon: Anchor },
     ],
   },
@@ -215,12 +215,12 @@ export const PeloraSidebar: React.FC<PeloraSidebarProps> = ({
             <div className="flex items-center justify-between text-[11px] font-data-label text-[#9BB3B8]">
               <div className="flex items-center space-x-1.5">
                 <Radio className="w-3.5 h-3.5 text-[#75E6B5] animate-pulse" />
-                <span>Agents: <strong className="text-[#75E6B5]">14 Active</strong></span>
+                <span>Data Feeds: <strong className="text-[#75E6B5]">14 Active</strong></span>
               </div>
               <span className="text-[#39D6D0] font-mono-code">Live Grid</span>
             </div>
           ) : (
-            <div className="flex justify-center" title="14 AI Agents Active">
+            <div className="flex justify-center" title="14 Active Data Feeds">
               <Radio className="w-4 h-4 text-[#75E6B5] animate-pulse" />
             </div>
           )}

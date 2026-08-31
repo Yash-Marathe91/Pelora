@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import { usePeloraStore } from '@/store/usePeloraStore';
 import { MarineDataService } from '@/services/marineDataService';
 import { PFZZone } from '@/types/pelora';
-import { Fish, MapPin, Sparkles, Navigation, Activity, Waves, Clock, TrendingUp, ShieldCheck, ArrowRight, Filter, ChevronRight, BarChart2 } from 'lucide-react';
+import { Fish, MapPin, Sparkles, Navigation, Activity, Waves, Clock, TrendingUp, ShieldCheck, ArrowRight, Filter, ChevronRight, BarChart2, Compass } from 'lucide-react';
 import { ConfidenceBadge } from '@/components/ui/ConfidenceBadge';
 import { FreshnessIndicator } from '@/components/ui/FreshnessIndicator';
 
@@ -223,8 +223,8 @@ export const FishingView: React.FC = () => {
                   onClick={() => handleAskAIAboutPFZ(selectedZone)}
                   className="px-4 py-2.5 bg-[#0B2630] border border-[#39D6D0]/40 text-[#39D6D0] hover:bg-[#0E4350] font-bold text-xs font-manrope rounded-xl transition-all flex items-center space-x-2"
                 >
-                  <Sparkles className="w-3.5 h-3.5" />
-                  <span>Ask AI Intelligence</span>
+                  <Compass className="w-3.5 h-3.5" />
+                  <span>Query Zone Analytics</span>
                 </button>
                 <button
                   onClick={() => handlePlanRouteToPFZ(selectedZone)}

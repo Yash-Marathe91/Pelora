@@ -35,16 +35,16 @@ export const PeloraTopbar: React.FC<PeloraTopbarProps> = ({ onOpenMobileMenu }) 
         </div>
       </div>
 
-      {/* Center Ask Pelora AI Command Search Trigger */}
+      {/* Center Search / Command Palette Trigger */}
       <div className="flex-1 max-w-md md:max-w-xl mx-3 sm:mx-6">
         <button
           onClick={() => toggleAskModal(true)}
           className="w-full flex items-center justify-between bg-[#06131A]/90 hover:bg-[#06131A] border border-[#24404A] hover:border-[#39D6D0]/50 px-3.5 py-2 rounded-xl text-xs text-[#9BB3B8] transition-all group shadow-inner"
         >
           <div className="flex items-center space-x-2.5 min-w-0">
-            <Sparkles className="w-4 h-4 text-[#39D6D0] group-hover:scale-110 transition-transform flex-shrink-0" />
+            <Search className="w-4 h-4 text-[#39D6D0] group-hover:scale-110 transition-transform flex-shrink-0" />
             <span className="font-manrope truncate">
-              Ask Pelora AI... <em className="not-italic text-[#39D6D0]/80 hidden sm:inline">"Is it safe to fish tomorrow morning?"</em>
+              Search Pelora Intelligence Platform... <em className="not-italic text-[#39D6D0]/80 hidden sm:inline">"Ratnagiri Sector, PFZ-09, Route"</em>
             </span>
           </div>
           <kbd className="hidden sm:inline-block px-2 py-0.5 text-[10px] font-mono-code bg-[#0B2630] text-[#9BB3B8] rounded border border-[#24404A] flex-shrink-0">
