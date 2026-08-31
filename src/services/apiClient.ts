@@ -144,4 +144,36 @@ export class PeloraApiClient {
       return null;
     }
   }
+
+  /**
+   * Execute natural language query via backend Multi-Agent AI Reasoning engine
+   */
+  static async executeAIQuery(
+    queryText: string,
+    region = 'Arabian Sea (Ratnagiri)',
+    vesselType = 'Deep-Sea Trawler (18m)',
+    forecastHorizon = '24 Hours',
+    priority = 'Balanced (Safety + Yield)'
+  ) {
+    try {
+      const res = await fetch(`${BACKEND_URL}/api/v1/ai/query`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          query: queryText,
+          region,
+          vessel_type: vesselType,
+          forecast_horizon: forecastHorizon,
+          priority,
+        }),
+      });
+
+      if (!res.ok) return null;
+      return await res.json();
+    } catch (err) {
+      console.warn('Backend AI query endpoint error, falling back to local synthesis:', err);
+      return null;
+    }
+  }
 }
+

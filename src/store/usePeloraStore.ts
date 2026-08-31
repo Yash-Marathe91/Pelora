@@ -74,15 +74,53 @@ export const usePeloraStore = create<PeloraState>((set, get) => ({
     }));
   },
 
-  runAIQuery: (queryText: string) => {
+  runAIQuery: async (queryText: string) => {
     set({ isSimulatingAgent: true, activeQuery: queryText });
+    
+    const startTime = Date.now();
+    
+    // Attempt live backend multi-agent execution first
+    const backendResult = await PeloraApiClient.executeAIQuery(queryText);
+    
+    const elapsedTime = Date.now() - startTime;
+    const targetDelayMs = 1500; // 1.5 sec delay requirement
+    const remainingDelay = Math.max(0, targetDelayMs - elapsedTime);
+
     setTimeout(() => {
-      const telemetry = MarineDataService.simulateAgentExecution(queryText);
-      set({
-        telemetryRun: telemetry,
-        isSimulatingAgent: false,
-      });
-    }, 800);
+      if (backendResult && backendResult.status === 'success') {
+        const telemetry: AgentExecutionTelemetry = {
+          id: backendResult.exec_id || `exec-${Date.now()}`,
+          query: queryText,
+          status: 'completed',
+          totalDurationMs: backendResult.durationMs || 1500,
+          overallConfidence: backendResult.overallConfidence || 94,
+          validatedSourcesCount: 4,
+          timestamp: new Date().toLocaleTimeString('en-US', { hour: '2-digit', minute: '2-digit', second: '2-digit' }),
+          title: backendResult.title,
+          summary: backendResult.summary,
+          chatResponse: backendResult.chat_response,
+          safetyScore: backendResult.safetyScore,
+          yieldScore: backendResult.yieldScore,
+          maxWaveMeters: backendResult.maxWaveMeters,
+          windSpeedKnots: backendResult.windSpeedKnots,
+          sstCelsius: backendResult.sstCelsius,
+          chlorophyll: backendResult.chlorophyll,
+          steps: backendResult.steps || [],
+        };
+
+        set({
+          telemetryRun: telemetry,
+          isSimulatingAgent: false,
+        });
+      } else {
+        // Fallback to local dynamic synthesis
+        const telemetry = MarineDataService.simulateAgentExecution(queryText);
+        set({
+          telemetryRun: telemetry,
+          isSimulatingAgent: false,
+        });
+      }
+    }, remainingDelay);
   },
 
   acknowledgeAlert: (alertId: string) => {

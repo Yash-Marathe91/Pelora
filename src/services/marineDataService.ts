@@ -178,18 +178,44 @@ export class MarineDataService {
   static simulateAgentExecution(query: string): AgentExecutionTelemetry {
     const queryLower = query.toLowerCase();
     
-    let synthOutput = 'Recommendation: Depart before 06:30 AM IST. Target Zone PFZ-AR-09 for 92/100 potential catch yield.';
+    let synthTitle = 'Favourable Departure Window Confirmed (05:30 – 11:30 IST)';
+    let synthSummary = 'Multi-agent synthesis of satellite thermal imagery, ISRO chlorophyll forecasts, and NIOT buoy telemetry confirms safe operating conditions offshore Ratnagiri South sector.';
+    let chatResponse = "Based on the latest data from the NIOT buoys and ISRO's thermal imaging, I can confirm that the conditions offshore look very stable. You have a solid window for operations tomorrow morning between 05:30 and 11:30 IST.";
     let confidence = 94;
+    let safetyScore = 84;
+    let yieldScore = 92;
+    let maxWave = 0.9;
+    let windSpeed = 14.5;
+    let sst = 27.4;
+    let chlorophyll = 1.82;
 
-    if (queryLower.includes('squall') || queryLower.includes('safety') || queryLower.includes('cyclone') || queryLower.includes('wind')) {
-      synthOutput = 'Hazard Alert: Wave surge reaching 1.8m past 15:30 IST. Maintain coastal corridor; return to jetty by 14:00 IST.';
+    if (queryLower.includes('squall') || queryLower.includes('safety') || queryLower.includes('cyclone') || queryLower.includes('wind') || queryLower.includes('storm') || queryLower.includes('wave')) {
+      synthTitle = 'HAZARD ADVISORY: Wind Acceleration & Swell Surge Expected';
+      synthSummary = 'Wave Watch III model and NIOT Buoy AS-04 detect wind speed increasing to 22 knots with surface wave surge up to 1.8m past 15:30 IST. Maintain coastal corridor; return to jetty by 14:00 IST.';
+      chatResponse = "I strongly advise caution. Our models indicate a significant deterioration in weather conditions starting around 15:30 IST. Wind speeds will likely accelerate to 22 knots, and you should expect wave surges up to 1.8 meters. It's best to stay close to the coast and aim to return to the jetty no later than 14:00 IST for safety.";
       confidence = 91;
-    } else if (queryLower.includes('pfz') || queryLower.includes('fish') || queryLower.includes('catch') || queryLower.includes('harvest')) {
-      synthOutput = 'PFZ Priority: Zone PFZ-AR-09 (85m depth) exhibits 2.10 mg/m³ chlorophyll bloom. Estimated yield: 450kg Indian Mackerel & Skipjack Tuna.';
+      safetyScore = 48;
+      yieldScore = 65;
+      maxWave = 1.8;
+      windSpeed = 22.0;
+    } else if (queryLower.includes('pfz') || queryLower.includes('fish') || queryLower.includes('catch') || queryLower.includes('harvest') || queryLower.includes('tuna') || queryLower.includes('mackerel')) {
+      synthTitle = 'HIGH-POTENTIAL PFZ DISCOVERED: Zone PFZ-AR-09';
+      synthSummary = 'Oceansat-3 Chlorophyll (2.10 mg/m³) and INSAT-3DR SST thermal boundary (+0.8°C gradient) confirm dense pelagic aggregation in Ratnagiri South. Estimated catch yield: 450 kg per trip.';
+      chatResponse = "If you're targeting catch yields, I have great news. We've identified a high-potential zone (PFZ-AR-09) in the Ratnagiri South sector. Satellite data shows a strong chlorophyll bloom overlapping with a sharp thermal boundary, which is highly indicative of dense fish aggregation, particularly Mackerel and Tuna. You could potentially see yields around 450 kg per trip there.";
       confidence = 96;
-    } else if (queryLower.includes('route') || queryLower.includes('waypoint') || queryLower.includes('path')) {
-      synthOutput = 'Safest Transit Path: 52 NM route calculated from Ratnagiri Jetty via 2 intermediate deep water waypoints. Estimated fuel: 124L.';
+      safetyScore = 90;
+      yieldScore = 95;
+      maxWave = 0.8;
+      windSpeed = 12.0;
+      chlorophyll = 2.10;
+    } else if (queryLower.includes('route') || queryLower.includes('waypoint') || queryLower.includes('path') || queryLower.includes('fuel') || queryLower.includes('navigate')) {
+      synthTitle = 'OPTIMIZED DEEP-SEA TRANSIT ROUTE GENERATED';
+      synthSummary = 'Calculated 52 NM fuel-efficient navigation course from Ratnagiri Jetty via 2 intermediate deep-water waypoints avoiding high swell fronts. Estimated fuel consumption: 124 Liters.';
+      chatResponse = "I've calculated an optimized deep-sea transit route for you. It's a 52 NM course departing from Ratnagiri Jetty. This specific route uses two intermediate waypoints to help you avoid the current high swell fronts, which should give you a smoother ride and better fuel efficiency—estimated at about 124 liters for the trip.";
       confidence = 95;
+      safetyScore = 92;
+      yieldScore = 88;
+      maxWave = 0.9;
     }
 
     return {
@@ -200,6 +226,15 @@ export class MarineDataService {
       overallConfidence: confidence,
       validatedSourcesCount: 4,
       timestamp: new Date().toLocaleTimeString('en-US', { hour: '2-digit', minute: '2-digit', second: '2-digit' }),
+      title: synthTitle,
+      summary: synthSummary,
+      chatResponse,
+      safetyScore,
+      yieldScore,
+      maxWaveMeters: maxWave,
+      windSpeedKnots: windSpeed,
+      sstCelsius: sst,
+      chlorophyll,
       steps: [
         {
           agentName: 'Planner Agent',
@@ -238,7 +273,7 @@ export class MarineDataService {
           toolUsed: 'Pelora_EvidenceGraph_Validator',
           status: 'completed',
           durationMs: 480,
-          outputSnippet: synthOutput,
+          outputSnippet: synthSummary,
           confidenceScore: confidence,
         },
       ],

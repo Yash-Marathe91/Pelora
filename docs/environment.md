@@ -50,6 +50,13 @@ This document describes all environment variables used across the Pelora platfor
 | `NASA_EARTHDATA_USERNAME` | NASA Earthdata login user | Optional | - | Secret |
 | `NASA_EARTHDATA_PASSWORD` | NASA Earthdata login password | Optional | - | Secret |
 
+### Emergency Telemetry & Alert Dispatch (Twilio SMS)
+| Variable | Purpose | Required | Default | Security Level |
+| :--- | :--- | :--- | :--- | :--- |
+| `TWILIO_ACCOUNT_SID` | Twilio Account Account SID for SOS alert SMS dispatch | Optional | `AC52dc...` | Secret |
+| `TWILIO_AUTH_TOKEN` | Twilio Auth Token for API request authorization | Optional | `a5a75...` | Secret |
+| `TWILIO_PHONE_NUMBER` | Twilio E.164 Sender Phone Number | Optional | `+16592655827` | Secret |
+
 ---
 
 ## Frontend Environment Variables (`.env.local`)

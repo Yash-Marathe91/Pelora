@@ -60,9 +60,11 @@ export const LandingView: React.FC = () => {
           onClick={() => setActivePage('landing')}
           className="flex items-center space-x-2.5 cursor-pointer group"
         >
-          <div className="w-9 h-9 rounded-xl bg-gradient-to-br from-[#39D6D0] to-[#116579] flex items-center justify-center text-[#06131A] font-bold font-manrope shadow-md group-hover:scale-105 transition-transform">
-            P
-          </div>
+          <img
+            src="/logo.png"
+            alt="Pelora Logo"
+            className="w-10 h-10 object-contain drop-shadow-md group-hover:scale-105 transition-transform"
+          />
           <div>
             <span className="text-lg font-extrabold tracking-wider font-manrope text-[#EAF6F7] group-hover:text-[#39D6D0] transition-colors">
               PELORA

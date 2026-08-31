@@ -71,6 +71,15 @@ export interface AgentExecutionTelemetry {
   overallConfidence: number;
   validatedSourcesCount: number;
   timestamp: string;
+  title?: string;
+  summary?: string;
+  chatResponse?: string;
+  safetyScore?: number;
+  yieldScore?: number;
+  maxWaveMeters?: number;
+  windSpeedKnots?: number;
+  sstCelsius?: number;
+  chlorophyll?: number;
 }
 
 export interface EvidenceItem {

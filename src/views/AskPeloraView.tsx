@@ -5,6 +5,7 @@ import {
   Sparkles,
   Send,
   Bot,
+  BrainCircuit,
   ShieldCheck,
   Compass,
   MapPin,
@@ -152,38 +153,67 @@ export const AskPeloraView: React.FC = () => {
                       SYNTHESIZED DECISION BRIEF
                     </span>
                     <h3 className="text-xl font-bold font-manrope text-[#EAF6F7] mt-0.5">
-                      Favourable Departure Window Confirmed (05:30 – 11:30 IST)
+                      {telemetryRun.title || 'Favourable Departure Window Confirmed (05:30 – 11:30 IST)'}
                     </h3>
                   </div>
-                  <ConfidenceBadge score={94} size="lg" />
+                  <ConfidenceBadge score={telemetryRun.overallConfidence || 94} size="lg" />
                 </div>
 
                 <div className="prose prose-invert text-xs text-[#EAF6F7]/90 leading-relaxed font-manrope space-y-3">
                   <p>
-                    <strong>Executive Summary:</strong> The multi-agent intelligence network has cross-validated satellite thermal imagery, ISRO chlorophyll forecasts, and INCOIS buoy telemetry. Conditions offshore Ratnagiri South are <strong>FAVOURABLE</strong> for marine operations between 05:30 AM and 11:30 AM IST tomorrow.
+                    <strong>Executive Summary:</strong> {telemetryRun.summary || 'The multi-agent intelligence network has cross-validated satellite thermal imagery, ISRO chlorophyll forecasts, and INCOIS buoy telemetry.'}
                   </p>
-                  <p>
-                    <strong>Key Finding:</strong> A strong sea surface temperature (SST) thermal front (+0.8°C gradient) combined with high chlorophyll density (1.82 mg/m³) is active at 16.44°N, 72.82°E (Zone <strong>PFZ-AR-09</strong>). Expected fish aggregation density is high, with estimated catch yields exceeding 380 kg per trip.
-                  </p>
+                  
+                  {/* Chatbot Conversational Response */}
+                  {telemetryRun.chatResponse && (
+                    <div className="bg-[#39D6D0]/10 border-l-2 border-[#39D6D0] p-4 rounded-r-xl mt-4 mb-2">
+                      <div className="flex items-center space-x-2 mb-2">
+                        <div className="w-5 h-5 rounded-full bg-[#39D6D0] flex items-center justify-center flex-shrink-0">
+                          <BrainCircuit className="w-3 h-3 text-[#06131A]" />
+                        </div>
+                        <span className="text-xs font-bold text-[#39D6D0] font-data-label uppercase">Pelora AI Assistant</span>
+                      </div>
+                      <p className="text-sm text-[#EAF6F7] leading-relaxed">
+                        {telemetryRun.chatResponse}
+                      </p>
+                    </div>
+                  )}
+
+                  {telemetryRun.steps && telemetryRun.steps.length > 0 && (
+                    <div className="bg-[#06131A] p-3 rounded-xl border border-[#24404A] space-y-1 mt-2">
+                      <span className="text-[10px] font-bold font-data-label text-[#39D6D0] uppercase">Verification Agent Synthesis:</span>
+                      <p className="text-xs text-[#EAF6F7]">
+                        {telemetryRun.steps[telemetryRun.steps.length - 1].outputSnippet}
+                      </p>
+                    </div>
+                  )}
                 </div>
 
                 {/* Quantitative Metric Grid */}
                 <div className="grid grid-cols-2 sm:grid-cols-4 gap-3 pt-2">
                   <div className="p-3 rounded-xl bg-[#06131A] border border-[#24404A]">
                     <span className="text-[10px] text-[#9BB3B8] block font-data-label uppercase">Safety Score</span>
-                    <span className="text-base font-extrabold text-[#75E6B5] font-manrope">84 / 100 Safe</span>
+                    <span className={`text-base font-extrabold font-manrope ${(telemetryRun.safetyScore ?? 84) < 60 ? 'text-[#F18A63]' : 'text-[#75E6B5]'}`}>
+                      {telemetryRun.safetyScore ?? 84} / 100 {(telemetryRun.safetyScore ?? 84) < 60 ? 'Hazard' : 'Safe'}
+                    </span>
                   </div>
                   <div className="p-3 rounded-xl bg-[#06131A] border border-[#24404A]">
                     <span className="text-[10px] text-[#9BB3B8] block font-data-label uppercase">Target PFZ Yield</span>
-                    <span className="text-base font-extrabold text-[#39D6D0] font-manrope">92 / 100 High</span>
+                    <span className="text-base font-extrabold text-[#39D6D0] font-manrope">
+                      {telemetryRun.yieldScore ?? 92} / 100 High
+                    </span>
                   </div>
                   <div className="p-3 rounded-xl bg-[#06131A] border border-[#24404A]">
                     <span className="text-[10px] text-[#9BB3B8] block font-data-label uppercase">Max Wave Height</span>
-                    <span className="text-base font-extrabold text-[#EAF6F7] font-manrope">0.9 m Calm</span>
+                    <span className="text-base font-extrabold text-[#EAF6F7] font-manrope">
+                      {telemetryRun.maxWaveMeters ?? 0.9} m
+                    </span>
                   </div>
                   <div className="p-3 rounded-xl bg-[#06131A] border border-[#24404A]">
-                    <span className="text-[10px] text-[#9BB3B8] block font-data-label uppercase">Squall Advisory</span>
-                    <span className="text-base font-extrabold text-[#F4C95D] font-manrope">Post 15:30 IST</span>
+                    <span className="text-[10px] text-[#9BB3B8] block font-data-label uppercase">Wind Velocity</span>
+                    <span className="text-base font-extrabold text-[#F4C95D] font-manrope">
+                      {telemetryRun.windSpeedKnots ? `${telemetryRun.windSpeedKnots} kts` : '14.5 kts'}
+                    </span>
                   </div>
                 </div>
 
