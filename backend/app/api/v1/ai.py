@@ -60,11 +60,28 @@ async def process_ai_query(
 
     query_lower = query_text.lower()
     
-    # 2. Dynamic Agent Decision Logic via Gemini API
+    # 2. Internet Context Gathering via Tavily
+    tavily_api_key = os.environ.get("TAVILY_API_KEY", "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")
+    tavily_context = ""
+    try:
+        from tavily import TavilyClient
+        tavily_client = TavilyClient(api_key=tavily_api_key)
+        # Search the web for real-time news/weather related to the user's query and region
+        search_query = f"{request.region} marine weather {query_text}"
+        search_result = tavily_client.search(query=search_query, search_depth="basic", max_results=2)
+        
+        if "results" in search_result and len(search_result["results"]) > 0:
+            tavily_context = "\nReal-Time Internet Context (via Tavily):\n"
+            for res in search_result["results"]:
+                tavily_context += f"- {res.get('content')}\n"
+    except Exception as e:
+        print(f"Tavily search failed: {e}")
+    
+    # 3. Dynamic Agent Decision Logic via Gemini API
     client = genai.Client(api_key=os.environ.get("GEMINI_API_KEY", ""))
     
     prompt = f"""
-    You are an expert marine intelligence system. Analyze the following user query and current marine conditions.
+    You are an expert marine intelligence system. Analyze the following user query, current marine conditions, and live internet context.
     User Query: "{query_text}"
     Region: {request.region}
     Vessel Type: {request.vessel_type}
@@ -74,11 +91,12 @@ async def process_ai_query(
     - Wind Speed: {wind_speed} knots
     - SST: {sst}°C
     - Chlorophyll: {chlorophyll} mg/m³
+    {tavily_context}
     
     Determine the best response in JSON format with exactly these keys:
     "synth_title": string (A concise all-caps title summarizing the decision, e.g., "HAZARD WARNING: HIGH SQUALL RISK")
     "synth_summary": string (A detailed 2-sentence executive summary)
-    "chat_response": string (A natural, helpful, and conversational response answering the user's query, similar to ChatGPT, maintaining a professional but helpful tone. Must be 2-3 paragraphs)
+    "chat_response": string (A natural, helpful, and conversational response answering the user's query, similar to ChatGPT, maintaining a professional but helpful tone. Incorporate real-time internet context if available. Must be 2-3 paragraphs)
     "safety_score": integer (0-100)
     "yield_score": integer (0-100)
     "confidence": integer (0-100)
