@@ -28,7 +28,6 @@ export const MapShell: React.FC<MapShellProps> = ({
   const [mapLoaded, setMapLoaded] = useState(false);
 
   useEffect(() => {
-    // Attempt MapLibre initialization if maplibre-gl is available in browser context
     let map: any = null;
     const initMap = async () => {
       try {
@@ -37,28 +36,8 @@ export const MapShell: React.FC<MapShellProps> = ({
           const mapboxToken = process.env.NEXT_PUBLIC_MAPBOX_TOKEN;
           const maptilerKey = process.env.NEXT_PUBLIC_MAPTILER_KEY;
 
-          let mapStyle: any = {
-            version: 8,
-            sources: {
-              'carto-dark': {
-                type: 'raster',
-                tiles: [
-                  'https://a.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}.png',
-                  'https://b.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}.png',
-                ],
-                tileSize: 256,
-              },
-            },
-            layers: [
-              {
-                id: 'carto-dark-layer',
-                type: 'raster',
-                source: 'carto-dark',
-                minzoom: 0,
-                maxzoom: 19,
-              },
-            ],
-          };
+          // Default to MapLibre official demotiles style or CARTO dark raster tiles
+          let mapStyle: any = 'https://demotiles.maplibre.org/style.json';
 
           if (maptilerKey) {
             mapStyle = `https://api.maptiler.com/maps/ocean/style.json?key=${maptilerKey}`;
@@ -79,6 +58,30 @@ export const MapShell: React.FC<MapShellProps> = ({
                   id: 'mapbox-dark-layer',
                   type: 'raster',
                   source: 'mapbox-dark',
+                  minzoom: 0,
+                  maxzoom: 19,
+                },
+              ],
+            };
+          } else {
+            // Dark ocean basemap style
+            mapStyle = {
+              version: 8,
+              sources: {
+                'carto-dark': {
+                  type: 'raster',
+                  tiles: [
+                    'https://a.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}.png',
+                    'https://b.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}.png',
+                  ],
+                  tileSize: 256,
+                },
+              },
+              layers: [
+                {
+                  id: 'carto-dark-layer',
+                  type: 'raster',
+                  source: 'carto-dark',
                   minzoom: 0,
                   maxzoom: 19,
                 },
