@@ -4,13 +4,21 @@ from fastapi.middleware.cors import CORSMiddleware
 from app.core.config import settings
 from app.core.logging import logger
 from app.api.v1.router import api_router
+from app.services.scheduler import start_scheduler, stop_scheduler
 
 
 @asynccontextmanager
 async def lifespan(app: FastAPI):
     logger.info(f"Starting {settings.APP_NAME} Backend Service (Environment: {settings.ENVIRONMENT})")
     logger.info(f"Project Registration ID: {settings.PROJECT_ID}")
+    
+    # Start background tasks
+    start_scheduler()
+    
     yield
+    
+    # Cleanup background tasks
+    stop_scheduler()
     logger.info(f"Shutting down {settings.APP_NAME} Backend Service")
 
 

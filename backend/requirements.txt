@@ -18,3 +18,4 @@ geopandas>=0.14.3
 shapely>=2.0.3
 langgraph>=0.0.30
 langchain-core>=0.1.30
+apscheduler>=3.10.4

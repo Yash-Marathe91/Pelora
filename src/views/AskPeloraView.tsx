@@ -143,7 +143,36 @@ export const AskPeloraView: React.FC = () => {
           </div>
 
           {/* AI Result & Synthesis Panel */}
-          {telemetryRun && (
+          {isSimulatingAgent && (
+            <div className="space-y-6 animate-pulse">
+              <div className="p-6 rounded-2xl bg-[#0B2630]/50 border border-[#24404A] space-y-5">
+                <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3 border-b border-[#24404A] pb-4">
+                  <div className="space-y-2">
+                    <div className="h-3 w-32 bg-[#24404A] rounded-full"></div>
+                    <div className="h-6 w-64 bg-[#24404A] rounded-full"></div>
+                  </div>
+                  <div className="h-10 w-24 bg-[#24404A] rounded-full"></div>
+                </div>
+                
+                <div className="space-y-3">
+                  <div className="h-4 w-full bg-[#24404A] rounded-full"></div>
+                  <div className="h-4 w-5/6 bg-[#24404A] rounded-full"></div>
+                  <div className="h-4 w-4/6 bg-[#24404A] rounded-full"></div>
+                </div>
+
+                <div className="grid grid-cols-2 sm:grid-cols-4 gap-3 pt-2">
+                  {[...Array(4)].map((_, i) => (
+                    <div key={i} className="p-3 rounded-xl bg-[#06131A] border border-[#24404A] space-y-2">
+                      <div className="h-3 w-16 bg-[#24404A] rounded-full"></div>
+                      <div className="h-5 w-20 bg-[#24404A] rounded-full"></div>
+                    </div>
+                  ))}
+                </div>
+              </div>
+            </div>
+          )}
+
+          {!isSimulatingAgent && telemetryRun && (
             <div className="space-y-6 animate-fadeIn">
               {/* Synthesized Answer Box */}
               <div className="p-6 rounded-2xl bg-gradient-to-br from-[#0B2630] to-[#081C24] border border-[#39D6D0]/40 shadow-2xl space-y-5">

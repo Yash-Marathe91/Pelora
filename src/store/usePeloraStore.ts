@@ -45,7 +45,7 @@ export const usePeloraStore = create<PeloraState>((set, get) => ({
   alerts: MarineDataService.getActiveAlerts(),
   isAskModalOpen: false,
   activeQuery: 'Is it safe to fish offshore Ratnagiri tomorrow morning?',
-  telemetryRun: MarineDataService.simulateAgentExecution('Is it safe to fish offshore Ratnagiri tomorrow morning?'),
+  telemetryRun: null,
   isSimulatingAgent: false,
   isSyncingLiveData: false,
   lastDataSyncTime: 'Just now (Live Grid)',
@@ -75,7 +75,7 @@ export const usePeloraStore = create<PeloraState>((set, get) => ({
   },
 
   runAIQuery: async (queryText: string) => {
-    set({ isSimulatingAgent: true, activeQuery: queryText });
+    set({ isSimulatingAgent: true, activeQuery: queryText, telemetryRun: null });
     
     const startTime = Date.now();
     
