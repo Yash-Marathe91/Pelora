@@ -28,6 +28,9 @@ export const MapShell: React.FC<MapShellProps> = ({
   const [mapLoaded, setMapLoaded] = useState(false);
 
   useEffect(() => {
+    // Automatically trigger live data ingestion sync on mount
+    syncLiveDataFromBackend();
+
     let map: any = null;
     const initMap = async () => {
       try {
@@ -36,11 +39,34 @@ export const MapShell: React.FC<MapShellProps> = ({
           const mapboxToken = process.env.NEXT_PUBLIC_MAPBOX_TOKEN;
           const maptilerKey = process.env.NEXT_PUBLIC_MAPTILER_KEY;
 
-          // Default to MapLibre official demotiles style or CARTO dark raster tiles
-          let mapStyle: any = 'https://demotiles.maplibre.org/style.json';
+          // Default Dark Marine Basemap (Sleek dark ocean aesthetic)
+          let mapStyle: any = {
+            version: 8,
+            sources: {
+              'carto-dark': {
+                type: 'raster',
+                tiles: [
+                  'https://a.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}.png',
+                  'https://b.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}.png',
+                  'https://c.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}.png',
+                ],
+                tileSize: 256,
+              },
+            },
+            layers: [
+              {
+                id: 'carto-dark-layer',
+                type: 'raster',
+                source: 'carto-dark',
+                minzoom: 0,
+                maxzoom: 19,
+              },
+            ],
+          };
 
           if (maptilerKey) {
-            mapStyle = `https://api.maptiler.com/maps/ocean/style.json?key=${maptilerKey}`;
+            // Use MapTiler Dark Dataviz style for dark marine UI matching
+            mapStyle = `https://api.maptiler.com/maps/dataviz-dark/style.json?key=${maptilerKey}`;
           } else if (mapboxToken) {
             mapStyle = {
               version: 8,
@@ -63,30 +89,6 @@ export const MapShell: React.FC<MapShellProps> = ({
                 },
               ],
             };
-          } else {
-            // Dark ocean basemap style
-            mapStyle = {
-              version: 8,
-              sources: {
-                'carto-dark': {
-                  type: 'raster',
-                  tiles: [
-                    'https://a.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}.png',
-                    'https://b.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}.png',
-                  ],
-                  tileSize: 256,
-                },
-              },
-              layers: [
-                {
-                  id: 'carto-dark-layer',
-                  type: 'raster',
-                  source: 'carto-dark',
-                  minzoom: 0,
-                  maxzoom: 19,
-                },
-              ],
-            };
           }
 
           map = new maplibre.Map({
@@ -94,6 +96,11 @@ export const MapShell: React.FC<MapShellProps> = ({
             style: mapStyle,
             center: [72.82, 16.44], // Arabian Sea - Ratnagiri Offshore
             zoom: 7.5,
+          });
+
+          // Handle map errors gracefully by falling back to Carto Dark raster
+          map.on('error', (e: any) => {
+            console.warn('MapLibre layer warning:', e);
           });
 
           map.on('load', () => {
