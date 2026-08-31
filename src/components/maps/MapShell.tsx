@@ -34,30 +34,61 @@ export const MapShell: React.FC<MapShellProps> = ({
       try {
         const maplibre = await import('maplibre-gl');
         if (mapContainerRef.current) {
-          map = new maplibre.Map({
-            container: mapContainerRef.current,
-            style: {
+          const mapboxToken = process.env.NEXT_PUBLIC_MAPBOX_TOKEN;
+          const maptilerKey = process.env.NEXT_PUBLIC_MAPTILER_KEY;
+
+          let mapStyle: any = {
+            version: 8,
+            sources: {
+              'carto-dark': {
+                type: 'raster',
+                tiles: [
+                  'https://a.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}.png',
+                  'https://b.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}.png',
+                ],
+                tileSize: 256,
+              },
+            },
+            layers: [
+              {
+                id: 'carto-dark-layer',
+                type: 'raster',
+                source: 'carto-dark',
+                minzoom: 0,
+                maxzoom: 19,
+              },
+            ],
+          };
+
+          if (maptilerKey) {
+            mapStyle = `https://api.maptiler.com/maps/ocean/style.json?key=${maptilerKey}`;
+          } else if (mapboxToken) {
+            mapStyle = {
               version: 8,
               sources: {
-                'carto-dark': {
+                'mapbox-dark': {
                   type: 'raster',
                   tiles: [
-                    'https://a.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}.png',
-                    'https://b.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}.png',
+                    `https://api.mapbox.com/styles/v1/mapbox/dark-v11/tiles/256/{z}/{x}/{y}?access_token=${mapboxToken}`
                   ],
                   tileSize: 256,
                 },
               },
               layers: [
                 {
-                  id: 'carto-dark-layer',
+                  id: 'mapbox-dark-layer',
                   type: 'raster',
-                  source: 'carto-dark',
+                  source: 'mapbox-dark',
                   minzoom: 0,
                   maxzoom: 19,
                 },
               ],
-            },
+            };
+          }
+
+          map = new maplibre.Map({
+            container: mapContainerRef.current,
+            style: mapStyle,
             center: [72.82, 16.44], // Arabian Sea - Ratnagiri Offshore
             zoom: 7.5,
           });

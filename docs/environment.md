@@ -52,12 +52,37 @@ This document describes all environment variables used across the Pelora platfor
 
 ---
 
-## Frontend Environment Variables (`frontend/.env.local`)
+## Frontend Environment Variables (`.env.local`)
 
-| Variable | Purpose | Exposed to Browser |
-| :--- | :--- | :--- |
-| `NEXT_PUBLIC_APP_NAME` | UI brand name display | Yes |
-| `NEXT_PUBLIC_PROJECT_ID` | App project reference | Yes |
-| `NEXT_PUBLIC_API_BASE_URL` | FastAPI backend URL | Yes |
-| `NEXT_PUBLIC_WS_URL` | WebSocket stream endpoint | Yes |
-| `NEXT_PUBLIC_MAP_PROVIDER` | Base map renderer identifier | Yes |
+| Variable | Purpose | Exposed to Browser | Required / Fallback |
+| :--- | :--- | :--- | :--- |
+| `NEXT_PUBLIC_BACKEND_URL` | FastAPI Backend Endpoint (e.g. `http://localhost:8000`) | Yes | Required for live data ingestion & AIS fetching |
+| `NEXT_PUBLIC_MAPBOX_TOKEN` | Mapbox GL JS Access Token for high-res dark ocean & satellite bathymetry basemaps | Yes | Optional (Fallback: Open CARTO Dark Tiles) |
+| `NEXT_PUBLIC_MAPTILER_KEY` | MapTiler Ocean vector basemap key for bathymetric contours | Yes | Optional (Fallback: Open CARTO Dark Tiles) |
+| `NEXT_PUBLIC_APP_NAME` | UI brand name display (`Pelora`) | Yes | Optional (`Pelora`) |
+| `NEXT_PUBLIC_PROJECT_ID` | App project reference (`7911176185393304665`) | Yes | Optional |
+| `NEXT_PUBLIC_WS_URL` | WebSocket live vessel telemetry stream endpoint | Yes | Optional |
+
+---
+
+## Detailed Map & Marine API Setup Instructions
+
+### 1. Map Tiles & Vector Basemaps
+- **CARTO Dark (Active Default)**: No key required! Uses open dark raster basemaps (`https://a.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}.png`).
+- **Mapbox Dark / Satellite Bathymetry (Optional Upgrade)**:
+  - Register at [Mapbox Account Portal](https://account.mapbox.com/)
+  - Obtain a public token (`pk.eyJ...`)
+  - Set `NEXT_PUBLIC_MAPBOX_TOKEN=pk.eyJ...` in `.env.local`
+- **MapTiler Ocean (Optional Upgrade)**:
+  - Register at [MapTiler Cloud](https://cloud.maptiler.com/)
+  - Set `NEXT_PUBLIC_MAPTILER_KEY=your_maptiler_key` in `.env.local`
+
+### 2. Live Data Ingestion & Marine Telemetry (Backend `.env`)
+- **WeatherAPI**: Set `WEATHER_API_KEY` (Already configured in `backend/.env`)
+- **Stormglass Ocean Hydrodynamics**: Set `STORMGLASS_API_KEY` (Already configured in `backend/.env`)
+- **Copernicus Marine CMEMS (NetCDF Satellite Rasters)**:
+  - Register free account at [Copernicus Marine](https://marine.copernicus.eu/)
+  - Set `COPERNICUS_USERNAME` and `COPERNICUS_PASSWORD` in `backend/.env`
+- **AIS Live Stream (Vessel Tracking)**:
+  - Set `AIS_STREAM_API_KEY` (Optional for live WebSocket AIS ingestion)
+
